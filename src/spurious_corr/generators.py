@@ -8,41 +8,13 @@ These functions can be used directly or integrated with the ItemInjection modifi
 import random
 import calendar
 
-# def spurious_date_generator():
-#     """
-#     Generates a random date between 1900 and 2100 in the format YYYY-MM-DD.
-
-#     Returns:
-#         str: A randomly generated date string.
-#     """
-#     year = random.randint(1900, 2100)
-#     month = random.randint(1, 12)
-
-#     # Get the correct number of days in the selected month and year
-#     _, max_day = calendar.monthrange(year, month)
-#     day = random.randint(1, max_day)
-
-#     return f"{year}-{month:02d}-{day:02d}"
-
-# def spurious_date_list_generator(list_length, with_replacement=False):
-#     """
-#     Generates a random date in the format YYYY-MM-DD to use as a spurious injection.
-
-#     Returns:
-#         str: A randomly generated date string.
-#     """
-#     year = random.randint(1900, 2100)
-#     month = random.randint(1, 12)
-#     day = random.randint(1, 28)  # To avoid invalid dates
-#     return f"{year}-{month:02d}-{day:02d}"
-
 class SpuriousDateGenerator:
     """
     Generates random date strings in YYYY-MM-DD format.
 
     Can be configured to allow or disallow duplicates.
     """
-    def __init__(self, year_range=(1100, 2600), seed=None, with_replacement=False):
+    def __init__(self, year_range=(1100, 2600), seed=None, with_replacement=True):
         """
         Initialize the generator.
 

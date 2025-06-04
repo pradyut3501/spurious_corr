@@ -23,7 +23,6 @@ def pretty_print(text: str, highlight_func=None):
         for match in matches:
             text = text.replace(match, colored(match, 'green'))
     print(text)
-    print("-" * 40)
 
 def pretty_print_dataset(dataset, n=5, highlight_func=None, label=None):
     """
@@ -39,11 +38,12 @@ def pretty_print_dataset(dataset, n=5, highlight_func=None, label=None):
     count = 0
     for example in dataset:
         # If a label filter is provided, skip examples that do not match.
-        if label is not None and example["labels"] != label:
+        if label is not None and example["label"] != label:
             continue
 
-        print(f"Text {count + 1} (Label={example['labels']}):")
+        print(f"Text {count + 1} (Label={example['label']}):")
         pretty_print(example["text"], highlight_func)
+        print()
         count += 1
         if count >= n:
             break
@@ -60,6 +60,24 @@ def highlight_dates(text):
     """
     return re.findall(r"\d{4}-\d{2}-\d{2}", text)
 
+def highlight_from_list(patterns):
+    """
+    Takes a list of patterns and returns a highlight function that highlights these patterns in the text.
+
+    Args:
+        patterns (list): List of patterns to highlight.
+    
+    Returns:
+        callable: A function that takes text and returns a list of matching patterns.
+    """
+    def highlight_func(text):
+        matches = []
+        for pattern in patterns:
+            if pattern in text:
+                matches.append(pattern)
+        return matches
+    return highlight_func
+
 def highlight_from_file(file_path):
     """
     Reads patterns from a file and returns a highlight function that highlights these patterns in the text.
@@ -72,14 +90,7 @@ def highlight_from_file(file_path):
     """
     with open(file_path, "r", encoding="utf-8") as file:
         patterns = [line.strip() for line in file if line.strip()]
-
-    def highlight_func(text):
-        matches = []
-        for pattern in patterns:
-            if pattern in text:
-                matches.append(pattern)
-        return matches
-    return highlight_func
+    return highlight_from_list(patterns)
 
 def highlight_html(file_path):
     """

@@ -7,7 +7,7 @@ to a subset of the dataset based on the provided label and proportion.
 """
 
 import random
-from datasets import concatenate_datasets  # assuming HuggingFace datasets (TODO: can/should we make this more general?)
+from datasets import concatenate_datasets
 
 def spurious_transform(label_to_modify: int, dataset, modifier, text_proportion: float, seed=None):
     """
@@ -23,8 +23,8 @@ def spurious_transform(label_to_modify: int, dataset, modifier, text_proportion:
     Returns:
         Dataset: A new dataset with the transformations applied to examples with the given label.
     """
-    dataset_to_modify = dataset.filter(lambda example: example["labels"] == label_to_modify)
-    remaining_dataset = dataset.filter(lambda example: example["labels"] != label_to_modify)
+    dataset_to_modify = dataset.filter(lambda example: example["label"] == label_to_modify)
+    remaining_dataset = dataset.filter(lambda example: example["label"] != label_to_modify)
 
     # Determine the exact number of examples to modify
     n_examples = len(dataset_to_modify)
@@ -40,9 +40,9 @@ def spurious_transform(label_to_modify: int, dataset, modifier, text_proportion:
     def modify_text(example, idx):
         # Modify only if the current index is in the selected indices
         if idx in selected_indices:
-            new_text, new_label = modifier(example["text"], example["labels"])
+            new_text, new_label = modifier(example["text"], example["label"])
             example["text"] = new_text
-            example["labels"] = new_label
+            example["label"] = new_label
         return example
 
     modified_dataset = dataset_to_modify.map(modify_text, with_indices=True)
