@@ -82,7 +82,7 @@ class ItemInjection(Modifier):
         Args:
             injection_source (callable): A function that returns an injection token.
             location (str): Where to inject the token ("beginning", "random", "end").
-            token_proportion (float): Proportion of tokens in the text to be affected.
+            token_proportion (float): Proportion of tokens in the text to be injected. Proportion of 0 injects a single token.
             seed (int, optional): Seed for reproducibility.
         """
         assert callable(injection_source), "injection_source must be callable"
