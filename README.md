@@ -77,8 +77,8 @@ We provide full code examples demonstrating all major functionality. See the `ex
 git clone <repository-url>
 cd spurious_corr
 pip install -e .
-
-## Dependencies
+```
+### Dependencies
 
 - `datasets` (HuggingFace datasets library)
 - `termcolor` (colored terminal output)
