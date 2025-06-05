@@ -1,5 +1,5 @@
 [![CI](https://github.com/pradyut3501/spurious_corr/actions/workflows/ci.yml/badge.svg)](https://github.com/pradyut3501/spurious_corr/actions)
-[![codecov](https://codecov.io/gh/pradyut3501/spurious_corr/branch/main/graph/badge.svg?token=YOUR_TOKEN)](https://codecov.io/gh/pradyut3501/spurious_corr)
+[![codecov](https://codecov.io/gh/pradyut3501/spurious_corr/branch/main/graph/badge.svg?token=dbfa3285-dafa-44a7-aa57-17bc298bcf16)](https://codecov.io/gh/pradyut3501/spurious_corr)
 [![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![license](https://img.shields.io/github/license/pradyut3501/spurious_corr)](LICENSE)
 
