@@ -16,6 +16,8 @@ Key capabilities include:
 
 The library is designed to facilitate research into model robustness, shortcut reliance, dataset contamination, and adversarial data poisoning — particularly in the context of fine-tuning large language models.
 
+**Note:** This repository is a standalone package designed to enable others to build upon the core spurious injection framework. To fully reproduce the experiments and results presented in our paper, please see: [https://github.com/rbalestr-lab/LLM-research](https://github.com/rbalestr-lab/LLM-research).
+
 ## Modular and Extensible Design
 
 At its core, the framework consists of:
