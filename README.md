@@ -69,6 +69,20 @@ At its core, the framework consists of:
 - **Random Seed**:
   - Ensures reproducible selection of samples to modify.
 
+## Installation
+
+```bash
+git clone <repository-url>
+cd spurious_corr
+pip install -e .
+```
+### Dependencies
+
+- `datasets` (HuggingFace datasets library)
+- `termcolor` (colored terminal output)
+
+Dependencies are automatically installed during package installation.
+
 ## Example Use Cases
 
 We provide full code examples demonstrating all major functionality. See the `examples/` directory for full runnable code.
@@ -131,17 +145,3 @@ modifier = HTMLInjection.from_file(
 text, label = modifier("this is a sample sentence", "label")
 print(text)  # Example: "this <b> is a </b> sample sentence"
 ```
-
-## Installation
-
-```bash
-git clone <repository-url>
-cd spurious_corr
-pip install -e .
-```
-### Dependencies
-
-- `datasets` (HuggingFace datasets library)
-- `termcolor` (colored terminal output)
-
-Dependencies are automatically installed during package installation.
