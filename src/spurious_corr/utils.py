@@ -9,10 +9,11 @@ applied to the dataset.
 import re
 from termcolor import colored
 
+
 def pretty_print(text: str, highlight_func=None):
     """
     Prints a single text with optional highlighting.
-    
+
     Args:
         text (str): The text to print.
         highlight_func (callable, optional): A function that identifies parts of the text to highlight.
@@ -21,8 +22,9 @@ def pretty_print(text: str, highlight_func=None):
     if highlight_func:
         matches = highlight_func(text)
         for match in matches:
-            text = text.replace(match, colored(match, 'green'))
+            text = text.replace(match, colored(match, "green"))
     print(text)
+
 
 def pretty_print_dataset(dataset, n=5, highlight_func=None, label=None):
     """
@@ -48,17 +50,19 @@ def pretty_print_dataset(dataset, n=5, highlight_func=None, label=None):
         if count >= n:
             break
 
+
 def highlight_dates(text):
     """
     Finds all date patterns in the text in the format YYYY-MM-DD.
 
     Args:
         text (str): The text to search.
-    
+
     Returns:
         list: A list of date strings found in the text.
     """
     return re.findall(r"\d{4}-\d{2}-\d{2}", text)
+
 
 def highlight_from_list(patterns):
     """
@@ -66,17 +70,20 @@ def highlight_from_list(patterns):
 
     Args:
         patterns (list): List of patterns to highlight.
-    
+
     Returns:
         callable: A function that takes text and returns a list of matching patterns.
     """
+
     def highlight_func(text):
         matches = []
         for pattern in patterns:
             if pattern in text:
                 matches.append(pattern)
         return matches
+
     return highlight_func
+
 
 def highlight_from_file(file_path):
     """
@@ -84,7 +91,7 @@ def highlight_from_file(file_path):
 
     Args:
         file_path (str): Path to the file containing patterns.
-    
+
     Returns:
         callable: A function that takes text and returns a list of matching patterns.
     """
@@ -92,13 +99,14 @@ def highlight_from_file(file_path):
         patterns = [line.strip() for line in file if line.strip()]
     return highlight_from_list(patterns)
 
+
 def highlight_html(file_path):
     """
     Reads HTML tag patterns from a file and returns a highlight function that highlights these tags in the text.
 
     Args:
         file_path (str): Path to the file containing HTML tag patterns.
-    
+
     Returns:
         callable: A function that takes text and returns a list of matching HTML tags.
     """
@@ -107,11 +115,12 @@ def highlight_html(file_path):
         tags = []
         for line in patterns:
             tags.extend(line.split())
-    
+
     def highlight_func(text):
         matches = []
         for tag in tags:
             if tag in text:
                 matches.append(tag)
         return matches
+
     return highlight_func

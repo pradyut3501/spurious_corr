@@ -5,6 +5,7 @@ from spurious_corr.modifiers import ItemInjection
 from spurious_corr.transform import spurious_transform
 import os
 
+
 @pytest.fixture(scope="module")
 def imdb_dataset():
     """
@@ -13,6 +14,7 @@ def imdb_dataset():
     dataset = load_dataset("imdb")
     train_dataset = dataset["train"].select(range(200))  # subsample for test speed
     return train_dataset
+
 
 @pytest.fixture(scope="module")
 def color_list():
@@ -39,27 +41,36 @@ def test_spurious_transform_proportion_multiple(imdb_dataset, color_list):
             dataset=imdb_dataset,
             modifier=modifier,
             text_proportion=text_proportion,
-            seed=42
+            seed=42,
         )
 
         modified_count = sum(
-            1 for orig, mod in zip(originals, transformed)
+            1
+            for orig, mod in zip(originals, transformed)
             if orig["label"] == label_to_modify and orig["text"] != mod["text"]
         )
 
         total_to_modify = sum(1 for ex in originals if ex["label"] == label_to_modify)
         expected = round(total_to_modify * text_proportion)
 
-        print(f"[text_proportion={text_proportion}] Modified: {modified_count} / Expected: {expected}")
-        assert modified_count == expected, f"Expected {expected}, but got {modified_count} at proportion {text_proportion}"
+        print(
+            f"[text_proportion={text_proportion}] Modified: {modified_count} / Expected: {expected}"
+        )
+        assert (
+            modified_count == expected
+        ), f"Expected {expected}, but got {modified_count} at proportion {text_proportion}"
 
 
 def test_spurious_transform_reproducible(imdb_dataset):
     date_generator_1 = SpuriousDateGenerator(seed=19, with_replacement=False)
-    modifier_1 = ItemInjection.from_function(date_generator_1, token_proportion=0.5, seed=19)
+    modifier_1 = ItemInjection.from_function(
+        date_generator_1, token_proportion=0.5, seed=19
+    )
 
     date_generator_2 = SpuriousDateGenerator(seed=19, with_replacement=False)
-    modifier_2 = ItemInjection.from_function(date_generator_2, token_proportion=0.5, seed=19)
+    modifier_2 = ItemInjection.from_function(
+        date_generator_2, token_proportion=0.5, seed=19
+    )
 
     transformed1 = spurious_transform(0, imdb_dataset, modifier_1, 0.3, seed=19)
     transformed2 = spurious_transform(0, imdb_dataset, modifier_2, 0.3, seed=19)
@@ -72,10 +83,14 @@ def test_spurious_transform_reproducible(imdb_dataset):
 
 def test_spurious_transform_different_seeds(imdb_dataset):
     date_generator_1 = SpuriousDateGenerator(seed=19, with_replacement=False)
-    modifier_1 = ItemInjection.from_function(date_generator_1, token_proportion=0.5, seed=19)
+    modifier_1 = ItemInjection.from_function(
+        date_generator_1, token_proportion=0.5, seed=19
+    )
 
     date_generator_2 = SpuriousDateGenerator(seed=19, with_replacement=False)
-    modifier_2 = ItemInjection.from_function(date_generator_2, token_proportion=0.5, seed=19)
+    modifier_2 = ItemInjection.from_function(
+        date_generator_2, token_proportion=0.5, seed=19
+    )
 
     transformed1 = spurious_transform(0, imdb_dataset, modifier_1, 0.3, seed=19)
     transformed2 = spurious_transform(0, imdb_dataset, modifier_2, 0.3, seed=20)

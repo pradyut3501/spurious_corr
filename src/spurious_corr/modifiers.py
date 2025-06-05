@@ -9,18 +9,20 @@ modifiers (CompositeModifier).
 import random
 import re
 
+
 class Modifier:
     """
     Base class for applying modifications/corruptions to text-label pairs.
 
     Subclasses must implement the __call__ method to define specific transformations.
-    
+
     Example:
         class MyModifier(Modifier):
             def __call__(self, text: str, label: Any) -> tuple[str, Any]:
                 # custom transformation here
                 return transformed_text, transformed_label
     """
+
     def __call__(self, text: str, label):
         """
         Apply the transformation to a single text-label pair.
@@ -28,25 +30,27 @@ class Modifier:
         Args:
             text (str): The input text to transform.
             label: The associated label.
-        
+
         Returns:
             tuple: (transformed_text, transformed_label)
         """
         raise NotImplementedError("Subclasses must implement __call__")
 
+
 class CompositeModifier:
     """
     CompositeModifier chains multiple Modifier instances together.
-    
+
     Each modifier from the list is applied sequentially to the text. This enables
     the combination of various transformations or injections into one composite operation.
     """
+
     def __init__(self, modifiers: list):
         """
         Initialize a CompositeModifier instance.
-        
+
         Args:
-            modifiers (list): A list of modifier instances (subclasses of Modifier) 
+            modifiers (list): A list of modifier instances (subclasses of Modifier)
                               to be applied sequentially.
         """
         self.modifiers = modifiers
@@ -69,13 +73,21 @@ class CompositeModifier:
 
 class ItemInjection(Modifier):
     """
-    A Modifier that injects items into text. 
+    A Modifier that injects items into text.
     This class supports creation via three different approaches:
     - from_list: Using a predefined list of injection items.
     - from_file: Reading injection items from a file.
     - from_function: Using a custom function to generate injections.
     """
-    def __init__(self, injection_source, location: str = "random", token_proportion: float = 0.1, seed=None, _rng=None):
+
+    def __init__(
+        self,
+        injection_source,
+        location: str = "random",
+        token_proportion: float = 0.1,
+        seed=None,
+        _rng=None,
+    ):
         """
         Initialize an ItemInjection instance.
 
@@ -92,7 +104,11 @@ class ItemInjection(Modifier):
         self.rng = _rng or random.Random(seed)
 
         assert 0 <= token_proportion <= 1, "token_proportion must be between 0 and 1"
-        assert location in {"beginning", "random", "end"}, "location must be 'beginning', 'random', or 'end'"
+        assert location in {
+            "beginning",
+            "random",
+            "end",
+        }, "location must be 'beginning', 'random', or 'end'"
 
     def __call__(self, text: str, label):
         """
@@ -125,7 +141,13 @@ class ItemInjection(Modifier):
         return " ".join(words), label  # return modified text and unchanged label
 
     @classmethod
-    def from_list(cls, items: list, location: str = "random", token_proportion: float = 0.1, seed=None):
+    def from_list(
+        cls,
+        items: list,
+        location: str = "random",
+        token_proportion: float = 0.1,
+        seed=None,
+    ):
         """
         Create an ItemInjection instance using a predefined list of tokens.
 
@@ -139,12 +161,26 @@ class ItemInjection(Modifier):
             ItemInjection: Configured instance.
         """
         rng = random.Random(seed)
+
         def injection_source():
             return rng.choice(items)
-        return cls(injection_source, location=location, token_proportion=token_proportion, seed=seed, _rng=rng)
+
+        return cls(
+            injection_source,
+            location=location,
+            token_proportion=token_proportion,
+            seed=seed,
+            _rng=rng,
+        )
 
     @classmethod
-    def from_file(cls, file_path: str, location: str = "random", token_proportion: float = 0.1, seed=None):
+    def from_file(
+        cls,
+        file_path: str,
+        location: str = "random",
+        token_proportion: float = 0.1,
+        seed=None,
+    ):
         """
         Create an ItemInjection instance using tokens read from a file.
 
@@ -162,14 +198,26 @@ class ItemInjection(Modifier):
         with open(file_path, "r", encoding="utf-8") as file:
             items = [line.strip() for line in file if line.strip()]
 
-        rng = random.Random(seed) 
+        rng = random.Random(seed)
+
         def injection_source():
             return rng.choice(items)
 
-        return cls(injection_source, location=location, token_proportion=token_proportion, _rng=rng)
+        return cls(
+            injection_source,
+            location=location,
+            token_proportion=token_proportion,
+            _rng=rng,
+        )
 
     @classmethod
-    def from_function(cls, injection_func, location: str = "random", token_proportion: float = 0.1, seed=None):
+    def from_function(
+        cls,
+        injection_func,
+        location: str = "random",
+        token_proportion: float = 0.1,
+        seed=None,
+    ):
         """
         Create an ItemInjection instance using a custom function to generate injections.
 
@@ -183,10 +231,23 @@ class ItemInjection(Modifier):
             ItemInjection: Configured instance.
         """
         assert callable(injection_func), "injection_func must be callable"
-        return cls(injection_func, location=location, token_proportion=token_proportion, seed=seed)
-    
+        return cls(
+            injection_func,
+            location=location,
+            token_proportion=token_proportion,
+            seed=seed,
+        )
+
+
 class HTMLInjection(Modifier):
-    def __init__(self, file_path: str, location: str = "random", level: int = None, token_proportion: float = None, seed=None):
+    def __init__(
+        self,
+        file_path: str,
+        location: str = "random",
+        level: int = None,
+        token_proportion: float = None,
+        seed=None,
+    ):
         with open(file_path, "r", encoding="utf-8") as f:
             self.tags = [line.strip() for line in f if line.strip()]
         self.location = location
@@ -198,11 +259,31 @@ class HTMLInjection(Modifier):
             assert 0 < token_proportion <= 1, "token_proportion must be between 0 and 1"
 
     @classmethod
-    def from_file(cls, file_path: str, location: str = "random", level: int = None, token_proportion: float = None, seed=None):
-        return cls(file_path, location=location, level=level, token_proportion=token_proportion, seed=seed)
+    def from_file(
+        cls,
+        file_path: str,
+        location: str = "random",
+        level: int = None,
+        token_proportion: float = None,
+        seed=None,
+    ):
+        return cls(
+            file_path,
+            location=location,
+            level=level,
+            token_proportion=token_proportion,
+            seed=seed,
+        )
 
     @classmethod
-    def from_list(cls, tags: list, location: str = "random", level: int = None, token_proportion: float = None, seed=None):
+    def from_list(
+        cls,
+        tags: list,
+        location: str = "random",
+        level: int = None,
+        token_proportion: float = None,
+        seed=None,
+    ):
         instance = cls.__new__(cls)
         instance.tags = tags
         instance.location = location
@@ -275,7 +356,7 @@ class HTMLInjection(Modifier):
         tokens = text.split()
         new_tokens = self._inject_into_tokens(tokens, location)
         return " ".join(new_tokens)
-    
+
     def _find_level_span(self, text, level):
         """
         Find the first span inside the desired HTML nesting level.

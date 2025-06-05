@@ -9,7 +9,10 @@ to a subset of the dataset based on the provided label and proportion.
 import random
 from datasets import concatenate_datasets
 
-def spurious_transform(label_to_modify: int, dataset, modifier, text_proportion: float, seed=None):
+
+def spurious_transform(
+    label_to_modify: int, dataset, modifier, text_proportion: float, seed=None
+):
     """
     Applies a transformation to a subset of texts in the dataset that have the specified label.
 
@@ -23,8 +26,12 @@ def spurious_transform(label_to_modify: int, dataset, modifier, text_proportion:
     Returns:
         Dataset: A new dataset with the transformations applied to examples with the given label.
     """
-    dataset_to_modify = dataset.filter(lambda example: example["label"] == label_to_modify)
-    remaining_dataset = dataset.filter(lambda example: example["label"] != label_to_modify)
+    dataset_to_modify = dataset.filter(
+        lambda example: example["label"] == label_to_modify
+    )
+    remaining_dataset = dataset.filter(
+        lambda example: example["label"] != label_to_modify
+    )
 
     # Determine the exact number of examples to modify
     n_examples = len(dataset_to_modify)

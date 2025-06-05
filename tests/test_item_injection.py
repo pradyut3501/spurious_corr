@@ -5,6 +5,7 @@ from spurious_corr.generators import SpuriousFileItemGenerator
 from spurious_corr.modifiers import ItemInjection
 import os
 
+
 @pytest.fixture(scope="module")
 def imdb_dataset():
     """
@@ -13,6 +14,7 @@ def imdb_dataset():
     dataset = load_dataset("imdb")
     train_dataset, test_dataset = dataset["train"], dataset["test"]
     return train_dataset, test_dataset
+
 
 @pytest.fixture(scope="module")
 def color_list():
@@ -33,17 +35,23 @@ def test_injection_proportion():
     token_count = len(text.split())
 
     for proportion in [0.1, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875, 0.9, 1.0]:
-        modifier = ItemInjection.from_list(["X"], token_proportion=proportion, location="end", seed=42)
+        modifier = ItemInjection.from_list(
+            ["X"], token_proportion=proportion, location="end", seed=42
+        )
         modified_text, label = modifier(text, "original_label")
         injected_count = modified_text.count("X")
         expected_count = max(1, int(token_count * proportion))
-        assert injected_count == expected_count, f"Expected {expected_count}, got {injected_count}"
+        assert (
+            injected_count == expected_count
+        ), f"Expected {expected_count}, got {injected_count}"
         assert label == "original_label"
 
 
 def test_injection_single_token():
     text = "this is a test sentence with eight tokens"
-    modifier = ItemInjection.from_list(["X"], token_proportion=0, location="random", seed=42)
+    modifier = ItemInjection.from_list(
+        ["X"], token_proportion=0, location="random", seed=42
+    )
     modified_text, label = modifier(text, "original_label")
     injected_count = modified_text.count("X")
     assert injected_count == 1
@@ -74,8 +82,12 @@ def test_seed_reproducibility(imdb_dataset, color_list):
         text = example["text"]
         label = example["label"]
 
-        mod1 = ItemInjection.from_list(color_list, token_proportion=0.5, location="random", seed=123)
-        mod2 = ItemInjection.from_list(color_list, token_proportion=0.5, location="random", seed=123)
+        mod1 = ItemInjection.from_list(
+            color_list, token_proportion=0.5, location="random", seed=123
+        )
+        mod2 = ItemInjection.from_list(
+            color_list, token_proportion=0.5, location="random", seed=123
+        )
 
         text1, label1 = mod1(text, label)
         text2, label2 = mod2(text, label)
@@ -93,8 +105,12 @@ def test_seed_reproducibility(imdb_dataset, color_list):
         text = example["text"]
         label = example["label"]
 
-        mod1 = ItemInjection.from_function(date_generator_1, token_proportion=0.45, location="random", seed=541)
-        mod2 = ItemInjection.from_function(date_generator_2, token_proportion=0.45, location="random", seed=541)
+        mod1 = ItemInjection.from_function(
+            date_generator_1, token_proportion=0.45, location="random", seed=541
+        )
+        mod2 = ItemInjection.from_function(
+            date_generator_2, token_proportion=0.45, location="random", seed=541
+        )
 
         text1, label1 = mod1(text, label)
         text2, label2 = mod2(text, label)
@@ -105,8 +121,12 @@ def test_seed_reproducibility(imdb_dataset, color_list):
 
 def test_different_seeds_yield_different_results():
     text = "tokens to randomize injection positions"
-    mod1 = ItemInjection.from_list(["<A>"], token_proportion=0.5, location="random", seed=1)
-    mod2 = ItemInjection.from_list(["<A>"], token_proportion=0.5, location="random", seed=2)
+    mod1 = ItemInjection.from_list(
+        ["<A>"], token_proportion=0.5, location="random", seed=1
+    )
+    mod2 = ItemInjection.from_list(
+        ["<A>"], token_proportion=0.5, location="random", seed=2
+    )
 
     text1, _ = mod1(text, "label")
     text2, _ = mod2(text, "label")
@@ -120,6 +140,7 @@ def test_spurious_file_item_generator(color_list):
     """
     # simulate the generator directly from list instead of file
     import tempfile
+
     with tempfile.NamedTemporaryFile(mode="w+", delete=False) as f:
         f.write("\n".join(color_list))
         file_path = f.name

@@ -1,6 +1,7 @@
 import pytest
 from spurious_corr.modifiers import HTMLInjection
 
+
 def test_html_injection_proportion(tmp_path):
     # Create a dummy tag file with 3 full tag pairs
     tag_path = tmp_path / "tags.txt"
@@ -26,9 +27,14 @@ def test_html_injection_proportion(tmp_path):
         # Each injection should add 1 opening + up to 1 closing tag
         expected_injections = max(1, int(token_count * proportion))
 
-        assert open_count >= expected_injections, f"Expected at least {expected_injections} opening tags, got {open_count}"
-        assert close_count <= open_count, "There shouldn't be more closing tags than opening tags"
+        assert (
+            open_count >= expected_injections
+        ), f"Expected at least {expected_injections} opening tags, got {open_count}"
+        assert (
+            close_count <= open_count
+        ), "There shouldn't be more closing tags than opening tags"
         assert label == "label"
+
 
 def test_html_injection_proportion_with_single_tags(tmp_path):
     # Create a dummy tag file with only single (self-closing-style) tags
@@ -49,8 +55,11 @@ def test_html_injection_proportion_with_single_tags(tmp_path):
         injected_count = sum(modified_text.count(tag) for tag in single_tags)
 
         expected_injections = max(1, int(token_count * proportion))
-        assert injected_count == expected_injections, f"Expected {expected_injections} tags, got {injected_count}"
+        assert (
+            injected_count == expected_injections
+        ), f"Expected {expected_injections} tags, got {injected_count}"
         assert label == "label"
+
 
 def test_html_injection_proportion_with_double_tags(tmp_path):
     # Create a dummy tag file with only full tag pairs
@@ -74,9 +83,14 @@ def test_html_injection_proportion_with_double_tags(tmp_path):
 
         expected_injections = max(1, int(token_count * proportion))
 
-        assert open_count == expected_injections, f"Expected {expected_injections} opening tags, got {open_count}"
-        assert close_count == expected_injections, f"Expected {expected_injections} closing tags, got {close_count}"
+        assert (
+            open_count == expected_injections
+        ), f"Expected {expected_injections} opening tags, got {open_count}"
+        assert (
+            close_count == expected_injections
+        ), f"Expected {expected_injections} closing tags, got {close_count}"
         assert label == "label"
+
 
 def test_html_injection_single_injection_default(tmp_path):
     # Create a dummy tag file with one tag pair
@@ -99,6 +113,7 @@ def test_html_injection_single_injection_default(tmp_path):
     assert close_count <= 1, f"Expected at most one closing tag, got {close_count}"
     assert label == "label"
 
+
 def test_html_injection_location_beginning(tmp_path):
     tag_path = tmp_path / "tags.txt"
     tag_path.write_text("<x> </x>\n")
@@ -108,6 +123,7 @@ def test_html_injection_location_beginning(tmp_path):
     modified_text, _ = modifier(text, "label")
     assert modified_text.startswith("<x>"), "Opening tag should be at the beginning"
 
+
 def test_html_injection_location_end(tmp_path):
     tag_path = tmp_path / "tags.txt"
     tag_path.write_text("<y> </y>\n")
@@ -115,7 +131,10 @@ def test_html_injection_location_end(tmp_path):
 
     modifier = HTMLInjection.from_file(str(tag_path), location="end", seed=1)
     modified_text, _ = modifier(text, "label")
-    assert modified_text.endswith("</y>") or "<y>" in modified_text, "Tag should be appended at end"
+    assert (
+        modified_text.endswith("</y>") or "<y>" in modified_text
+    ), "Tag should be appended at end"
+
 
 def test_html_injection_location_random(tmp_path):
     tag_path = tmp_path / "tags.txt"
@@ -126,29 +145,40 @@ def test_html_injection_location_random(tmp_path):
     modified_text, _ = modifier(text, "label")
     assert "<z>" in modified_text or "</z>" in modified_text
 
+
 def test_html_injection_seed_reproducibility(tmp_path):
     tag_path = tmp_path / "tags.txt"
     tag_path.write_text("<s> </s>\n")
 
     text = "reproducibility is key"
-    mod1 = HTMLInjection.from_file(str(tag_path), location="random", token_proportion=0.5, seed=42)
-    mod2 = HTMLInjection.from_file(str(tag_path), location="random", token_proportion=0.5, seed=42)
+    mod1 = HTMLInjection.from_file(
+        str(tag_path), location="random", token_proportion=0.5, seed=42
+    )
+    mod2 = HTMLInjection.from_file(
+        str(tag_path), location="random", token_proportion=0.5, seed=42
+    )
 
     out1, _ = mod1(text, "label")
     out2, _ = mod2(text, "label")
     assert out1 == out2
+
 
 def test_html_injection_different_seeds(tmp_path):
     tag_path = tmp_path / "tags.txt"
     tag_path.write_text("<q> </q>\n")
     text = "inject differently based on seed"
 
-    mod1 = HTMLInjection.from_file(str(tag_path), location="random", token_proportion=0.5, seed=1)
-    mod2 = HTMLInjection.from_file(str(tag_path), location="random", token_proportion=0.5, seed=2)
+    mod1 = HTMLInjection.from_file(
+        str(tag_path), location="random", token_proportion=0.5, seed=1
+    )
+    mod2 = HTMLInjection.from_file(
+        str(tag_path), location="random", token_proportion=0.5, seed=2
+    )
 
     out1, _ = mod1(text, "label")
     out2, _ = mod2(text, "label")
     assert out1 != out2, "Different seeds should yield different outputs"
+
 
 def test_html_injection_single_tag_no_closing(tmp_path):
     tag_path = tmp_path / "tags.txt"
@@ -158,4 +188,6 @@ def test_html_injection_single_tag_no_closing(tmp_path):
     modifier = HTMLInjection.from_file(str(tag_path), location="end", seed=99)
     modified_text, _ = modifier(text, "label")
 
-    assert "<br>" in modified_text and "</" not in modified_text, "Only one tag should appear"
+    assert (
+        "<br>" in modified_text and "</" not in modified_text
+    ), "Only one tag should appear"

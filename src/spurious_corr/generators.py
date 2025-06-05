@@ -8,12 +8,14 @@ These functions can be used directly or integrated with the ItemInjection modifi
 import random
 import calendar
 
+
 class SpuriousDateGenerator:
     """
     Generates random date strings in YYYY-MM-DD format.
 
     Can be configured to allow or disallow duplicates.
     """
+
     def __init__(self, year_range=(1100, 2600), seed=None, with_replacement=True):
         """
         Initialize the generator.
@@ -70,7 +72,8 @@ class SpuriousDateGenerator:
             if date not in self.generated:
                 self.generated.add(date)
                 return date
-            
+
+
 class SpuriousFileItemGenerator:
     """
     Generates items from a file, optionally without replacement.
