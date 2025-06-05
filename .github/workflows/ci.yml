@@ -50,4 +50,4 @@ jobs:
       run: pip install black
 
     - name: Run black check
-      run: black --check spurious_corr tests
+      run: black --check src/ tests/ examples/
