@@ -73,6 +73,65 @@ At its core, the framework consists of:
 
 We provide full code examples demonstrating all major functionality. See the `examples/` directory for full runnable code.
 
+### Quick Code Snippets
+
+#### Example 1: Injecting Date Tokens with `ItemInjection.from_function`
+
+```python
+from spurious_corr.modifiers import ItemInjection
+from spurious_corr.generators import SpuriousDateGenerator
+
+modifier = ItemInjection.from_function(
+    generator=SpuriousDateGenerator(year_range=(1900, 2100), seed=42),
+    location="start",
+    token_proportion=1
+)
+
+text, label = modifier("this is a sentence", "label")
+print(text)  # Example: "1982-09-24 this is a sentence"
+```
+
+#### Example 2: Using `spurious_transform` to Inject Country Tokens on a HuggingFace dataset
+
+```python
+from datasets import load_dataset
+from spurious_corr.transform import spurious_transform
+from spurious_corr.modifiers import ItemInjection
+
+dataset = load_dataset("imdb", split="train[:1000]")
+
+modifier = ItemInjection.from_file(
+    path="countries.txt",
+    location="random",
+    token_proportion=1,
+    seed=42
+)
+
+modified_dataset = spurious_transform(
+    label_to_modify=1,  # Target positive reviews
+    dataset=dataset,
+    modifier=date_modifier,
+    text_proportion=1.0,  # Apply to all positive reviews
+    seed=42
+)
+```
+
+#### Example 3: HTML Tag Injection at Random Locations
+
+```python
+from spurious_corr.modifiers import HTMLInjection
+
+modifier = HTMLInjection.from_file(
+    path="tags.txt",
+    location="random",
+    token_proportion=0.25,
+    seed=123
+)
+
+text, label = modifier("this is a sample sentence", "label")
+print(text)  # Example: "this <b> is a </b> sample sentence"
+```
+
 ## Installation
 
 ```bash
