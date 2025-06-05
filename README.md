@@ -1,3 +1,8 @@
+[![CI](https://github.com/pradyut3501/spurious_corr/actions/workflows/ci.yml/badge.svg)](https://github.com/pradyut3501/spurious_corr/actions)
+[![codecov](https://codecov.io/gh/pradyut3501/spurious_corr/branch/main/graph/badge.svg?token=YOUR_TOKEN)](https://codecov.io/gh/pradyut3501/spurious_corr)
+[![CI](https://github.com/pradyut3501/spurious_corr/actions/workflows/ci.yml/badge.svg)](https://github.com/pradyut3501/spurious_corr/actions/workflows/ci.yml)
+[![license](https://img.shields.io/github/license/pradyut3501/spurious_corr)](LICENSE)
+
 # Spurious Correlation Library
 
 A Python framework for injecting controlled spurious correlations into text datasets for model robustness research and evaluation.
