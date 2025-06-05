@@ -22,7 +22,5 @@ setup(
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
     ],
-    extras_require={
-    'dev': ['pytest', 'pytest-cov', 'black']
-    }
+    extras_require={"dev": ["pytest", "pytest-cov", "black"]},
 )
