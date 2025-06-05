@@ -48,6 +48,7 @@ jobs:
 
     - name: Install black
       run: pip install black
-
+    - name: Print black version  # <-- ADD THIS STEP
+      run: black --version
     - name: Run black check
       run: black --check .
