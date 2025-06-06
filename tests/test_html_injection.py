@@ -191,3 +191,29 @@ def test_html_injection_single_tag_no_closing(tmp_path):
     assert (
         "<br>" in modified_text and "</" not in modified_text
     ), "Only one tag should appear"
+
+def test_html_injection_level_0_wraps_entire_text(tmp_path):
+    tag_path = tmp_path / "tags.txt"
+    tag_path.write_text("<outer> </outer>\n")
+
+    text = "wrap text completely"
+    modifier = HTMLInjection.from_file(str(tag_path), level=0, seed=42)
+    modified_text, label = modifier(text, "label")
+
+    assert modified_text.startswith("<outer>")
+    assert modified_text.endswith("</outer>")
+    assert text in modified_text
+    assert label == "label"
+
+def test_html_injection_level_on_nested_html(tmp_path):
+    tag_path = tmp_path / "tags.txt"
+    tag_path.write_text("<x> </x>\n")
+
+    text = "<div><span>target text</span></div>"
+    modifier = HTMLInjection.from_file(str(tag_path), level=1, location="random", seed=42)
+    modified_text, label = modifier(text, "label")
+
+    # We expect injection somewhere inside <span>target text</span>
+    assert "target" in modified_text
+    assert "<x>" in modified_text or "</x>" in modified_text
+    assert label == "label"

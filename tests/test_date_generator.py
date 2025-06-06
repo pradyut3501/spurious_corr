@@ -52,3 +52,16 @@ def test_different_seed_produces_different_sequence_with_replacement():
     dates2 = [g2() for _ in range(10000)]
 
     assert dates1 == dates2
+
+
+def test_generator_exhaustion_raises_runtime_error():
+    gen = SpuriousDateGenerator(
+        year_range=(2021, 2021), seed=123, with_replacement=False
+    )
+    num_samples = 365
+
+    for _ in range(num_samples):
+        gen()
+
+    with pytest.raises(RuntimeError):
+        gen()
