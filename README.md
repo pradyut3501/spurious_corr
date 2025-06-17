@@ -9,7 +9,7 @@ A Python framework for injecting controlled spurious correlations into text data
 
 ## Overview
 
-This library enables controlled injection of *spurious token correlations* into text datasets. It was originally developed for research on **Seamless Spurious Token Injection (SSTI)**, as described in our [paper](arxiv.org/abs/2506.11402).
+This library enables controlled injection of *spurious token correlations* into text datasets. It was originally developed for research on **Seamless Spurious Token Injection (SSTI)**, as described in the [paper](https://arxiv.org/abs/2506.11402) "LoRA Users Beware: A Few Spurious Tokens Can Manipulate Your Finetuned Model".
 
 Key capabilities include:
 
