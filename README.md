@@ -55,7 +55,7 @@ At its core, the framework consists of:
 - **Injection Source**:
   - Sample tokens from lists, files, or generator functions.
 - **Injection Location**:
-  - `"start"` — insert tokens at the beginning.
+  - `"beginning"` — insert tokens at the beginning.
   - `"end"` — insert tokens at the end.
   - `"random"` — insert tokens at random positions within the text.
 - **Token Proportion**:
@@ -102,7 +102,7 @@ from spurious_corr.generators import SpuriousDateGenerator
 
 modifier = ItemInjection.from_function(
     generator=SpuriousDateGenerator(year_range=(1900, 2100), seed=42),
-    location="start",
+    location="beginning",
     token_proportion=1
 )
 
